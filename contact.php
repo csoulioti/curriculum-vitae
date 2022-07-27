@@ -1,35 +1,28 @@
 <?php
 // Email Setting
 //=======================================
-$admin_email = "christina@csoulioti.com";
-$from_name   = "CSOULIOTI";
+define("PHPMAILER", true);
+require 'phpmailer/PHPMailerAutoload.php';
+include('phpmailer/config.inc.php');
 
-if(isset($_POST['useremail'])) {
-	
-	 $user_name 	= strip_tags($_POST['username']);
-	 $user_email 	= strip_tags($_POST['useremail']);
-	 $user_phone 	= strip_tags($_POST['userphone']);
-	 $comment_text 	= strip_tags($_POST['commenttext']);
-	
-	if (!filter_var($user_email, FILTER_VALIDATE_EMAIL)) {
-	echo 5;
-	exit;
+if (isset($_POST['contact_email'])) {
+	// $mail->Subject = 'New Contact Information';
+	// $mail->Body    = "Name: $user_name <br/>";
+	// $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+	$contact_name 	= strip_tags($_POST['contact_name']);
+	$contact_email 	= strip_tags($_POST['contact_email']);
+	$contact_phone 	= strip_tags($_POST['contact_phone']);
+	$contact_text 	= strip_tags($_POST['contact_text']);
+
+	$mail->Subject = 'New Contact Information';
+	$mail->Body    = "Name: $contact_name <br/>Email: $contact_email <br/>Phone: $contact_phone <br/>Comment: $contact_text <br/>";
+	$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+	if (!$mail->send()) {
+		echo '5';
+		exit;
+	} else {
+		echo '1';
 	}
-	else
-	{
-	$to  	   		= "$admin_email"; 
-	$subject 		= "New Contact Information";
-	$message		= "Name: $user_name <br/>";
-	$message 		.= "Email: $user_email <br/>";
-	$message 		.= "Phone: $user_phone <br/>";
-	$message 		.= "Comment: $comment_text <br/>";
-	$headers  		= "MIME-Version: 1.0\r\n";
-	$headers 		.= "Content-type: text/html; charset=iso-8859-1\r\n";
-	$headers 		.= "From:$from_name<$admin_email>";
-	$headers 		.= "Reply-To: $admin_email\r\n"."X-Mailer: PHP/".phpversion();
-	$send 			= mail($to, $subject, $message, $headers);
-	echo '1';	
 }
-}
-
-?>
